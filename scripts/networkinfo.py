@@ -189,7 +189,7 @@ def get_additional_info(interface):
     network = {}
     mtudata = bashCommand(['/usr/sbin/networksetup', '-getMTU', interface]).decode("utf-8", errors="ignore")
     if "Current Setting" in mtudata and "Error: The parameters were not valid" not in mtudata:
-        network["activemtu"] = re.sub('[^0-9]','', re.sub("[\(\[].*?[\)\]]", "", mtudata))
+        network["activemtu"] = re.sub('[^0-9]','', re.sub(r"[\(\[].*?[\)\]]", "", mtudata))
     else:
         return network
 
@@ -248,7 +248,7 @@ def get_bond_info(ifconfig_data):
                     elif "mtu" in bond_line:
                         bond["activemtu"] = re.sub('[^0-9]','', bond_line.split(' mtu ')[-1])
                     elif "media: " in bond_line:
-                        bond['activemedia'] = re.sub('\)','', re.sub('\(','left_para', bond_line).split('left_para')[1]) # tbase
+                        bond['activemedia'] = re.sub(r'\)','', re.sub(r'\(','left_para', bond_line).split('left_para')[1]) # tbase
                         bond['currentmedia'] = re.sub('media:','', bond_line.strip().split(' ')[1]) # autoselect
                 bonds.append(bond)
         return [_f for _f in bonds if _f]
